@@ -1,5 +1,5 @@
 [package]
-name = "brain-fuck-compiler"
+name = "brain-fuck-interperter"
 version = "0.1.0"
 edition = "2021"
 
