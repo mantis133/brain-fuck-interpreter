@@ -1,14 +1,16 @@
 #[derive(Debug)]
 pub enum Error{
     IO(std::io::Error),
-    File(String)
+    File(String),
+    Syntax(String)
 }
 
 impl std::fmt::Display for Error{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
            Self::IO(error) => {write!(f,"{error}")},
-           Self::File(error) => {write!(f,"{error}")}
+           Self::File(error) => {write!(f,"{error}")},
+           Self::Syntax(error) => {write!(f, "{error}")}
         }
     }
 }
