@@ -27,20 +27,24 @@ pub fn get_file_contents(filepath:&str) -> Result<String,error::Error>{
 
 
 // might want to remove type casting later.
-pub fn get_settings(file_contents:String) -> Result<Settings,error::Error>{
+pub fn get_settings(file_contents:&String) -> Result<Settings,error::Error>{
     let lines:Vec<&str> = file_contents.lines().into_iter().collect();
     let settings_line = String::from(lines[0]);
 
     let kwargs = settings_line.replace("_", "");
     let kwargs:Vec<&str> = kwargs.split(" - ").collect();
 
-    let kwargss:[&str;2] = kwargs.try_into().unwrap();
-    let size:usize = kwargss[0].parse().unwrap();
-
-    return match kwargss[1].trim() {
-        "u8" => {Ok(Settings::Ascii(vec![0;size]))},
-        "u32" => {Ok(Settings::UTF8(vec![0;size]))},
-        _ => {Err(error::Error::Syntax("Missing either array size or character encoding method on FIRST LINE".to_string()))}
+    match kwargs[0].parse(){
+        Ok(size) => {
+            return match kwargs[1].trim() {
+                "u8" => {Ok(Settings::Ascii(vec![0;size]))},
+                "u32" => {Ok(Settings::UTF8(vec![0;size]))},
+                _ => {Err(error::Error::Syntax("Missing either array size or character encoding method on FIRST LINE".to_string()))}
+            }
+        },
+        Err(_) => {// fails when the size is non rust numeric
+            return Err(error::Error::Syntax("Given array size is non numeric".to_string()));
+        }
     }
 }
 
