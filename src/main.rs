@@ -1,12 +1,14 @@
 use brain_fuck_interperter::*;
 
-fn inputchar() {
+fn inputchar() -> char {
     let mut buff:String = String::new();
     std::io::stdin().read_line(&mut buff).expect("wrong dumbass");
+    return buff.chars().nth(0).unwrap()
 }
 
-fn compute_token(mut memory:Vec<u8>, tape: Vec<char>) {
+fn compute_token_ascii(mut memory:Vec<u8>, tape: Vec<char>) {
     let mut pos = 0;
+    let mut loop_stack: Vec<usize> = Vec::new();
     for token in tape {
         match token {
             '+' => {memory[pos] += 1},
@@ -14,9 +16,9 @@ fn compute_token(mut memory:Vec<u8>, tape: Vec<char>) {
             '>' => {pos += 1},
             '<' => {pos -= 1},
             '.' => {print!("{}",memory[pos] as char)},
-            ',' => {},
-            '[' => {},
-            ']' => {},
+            ',' => {memory[pos] = inputchar() as u8},
+            '[' => {if memory[pos] != 0 {loop_stack.push(pos)}},
+            ']' => {if memory[pos] == 0 {loop_stack.pop();}},
             _ => {}
         }
     }
@@ -28,5 +30,5 @@ fn main() {
     let stream: Vec<char> = Vec::from(con).into_iter().map(|x| x as char).collect();
     let mut mem = vec![0u8;30000];
 
-    compute_token(mem, stream);
+    compute_token_ascii(mem, stream);
 }
