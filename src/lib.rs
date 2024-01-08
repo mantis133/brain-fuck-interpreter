@@ -48,6 +48,13 @@ pub fn get_settings(file_contents:&String) -> Result<Settings,error::Error>{
     }
 }
 
-pub fn get_tokens(file_contents:String){
-    
-}
+// pub fn compute_tokens(file_contents:String){
+//     let cons: Vec<char> = Vec::from(file_contents);
+//     for token in cons{
+//         match token{
+//             ('+' as u8) => {},
+
+//             _ => {}
+//         }
+//     }
+// }
