@@ -2,7 +2,8 @@
 pub enum Error{
     IO(std::io::Error),
     File(String),
-    Syntax(String)
+    Syntax(String),
+    Input(String)
 }
 
 impl std::fmt::Display for Error{
@@ -10,7 +11,8 @@ impl std::fmt::Display for Error{
         match self {
            Self::IO(error) => {write!(f,"{error}")},
            Self::File(error) => {write!(f,"{error}")},
-           Self::Syntax(error) => {write!(f, "{error}")}
+           Self::Syntax(error) => {write!(f, "{error}")},
+           Self::Input(error) => {write!(f, "{error}")}
         }
     }
 }

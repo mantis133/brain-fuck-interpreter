@@ -31,6 +31,15 @@ impl std::fmt::Display for Settings {
     }
 }
 
+pub fn sort_it_out() -> Result<String, error::Error> {
+    let args:Vec<String> = std::env::args().collect();
+    if args.len() < 2{
+        return Err(error::Error::Input("Please input the filename too.".to_string()))
+    }
+
+    return Ok(args[1].clone())
+}
+
 // Errors occur when: </br>
 // The given file contains characters that are not value UTF-8 </br>
 // The file path doesnt already exist </br>
