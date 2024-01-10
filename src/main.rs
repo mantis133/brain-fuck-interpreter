@@ -1,4 +1,4 @@
-use brain_fuck_interperter::*;
+use brain_fuck_interpreter::*;
 
 
 
