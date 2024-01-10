@@ -3,15 +3,30 @@ mod error;
 
 
 pub enum Settings {
-    Ascii(Vec<u8>),
-    UTF8(Vec<u32>)
+    AsciiS(Vec<u8>),
+    AsciiE(Vec<u8>),
+    UTF8S(Vec<u32>),
+    UTF8E(Vec<u32>),
+}
+
+impl Settings{
+    pub fn run(self, tape: Vec<char>) {
+        match self{
+            Settings::AsciiS(memory) => {compute_token_ascii_s(memory, tape)},
+            Settings::AsciiE(memory) => {compute_token_ascii_e(memory, tape)},
+            Settings::UTF8S(memory) => {compute_token_utf8_s(memory, tape)},
+            Settings::UTF8E(memory) => {compute_token_utf8_e(memory, tape)},
+        }
+    }
 }
 
 impl std::fmt::Display for Settings {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Settings::Ascii(memory) => {write!(f,"{:?}", memory)},
-            Settings::UTF8(memory) => {write!(f,"{:?}", memory)}
+            Settings::AsciiS(memory) => {write!(f,"{:?}", memory)},
+            Settings::AsciiE(memory) => {write!(f,"{:?}", memory)},
+            Settings::UTF8S(memory) => {write!(f,"{:?}", memory)},
+            Settings::UTF8E(memory) => {write!(f,"{:?}", memory)},
         }
     }
 }
@@ -37,8 +52,20 @@ pub fn get_settings(file_contents:&String) -> Result<Settings,error::Error>{
     match kwargs[0].parse(){
         Ok(size) => {
             return match kwargs[1].trim() {
-                "u8" => {Ok(Settings::Ascii(vec![0;size]))},
-                "u32" => {Ok(Settings::UTF8(vec![0;size]))},
+                "u8" => {
+                    match kwargs[2].trim().to_lowercase().as_str(){
+                        "s" => {Ok(Settings::AsciiS(vec![0;size]))},
+                        "e" => {Ok(Settings::AsciiE(vec![0;size]))},
+                        _ => {Err(error::Error::Syntax("For byte encoding there are two modes 's' and 'e'. Feel free to consult the README if you are confused.".to_string()))}
+                    }
+                },
+                "u32" => {
+                    match kwargs[2].trim().to_lowercase().as_str() {
+                        "s" => {Ok(Settings::UTF8S(vec![0;size]))},
+                        "e" => {Ok(Settings::UTF8E(vec![0;size]))},
+                        _ => {Err(error::Error::Syntax("for utf-8 encoding there are two modes; 's' and 'e'. Feel free to consult the README if you are confused.".to_string()))}
+                    }
+                },
                 _ => {Err(error::Error::Syntax("Missing either array size or character encoding method on FIRST LINE".to_string()))}
             }
         },
@@ -70,7 +97,7 @@ pub fn inputchar() -> char {
     return buff.chars().nth(0).unwrap()
 }
 
-pub fn compute_token_ascii(mut memory:Vec<u8>, tape: Vec<char>) {
+pub fn compute_token_ascii_s(mut memory:Vec<u8>, tape: Vec<char>) {
     let mut pointer_pos = 0;
     let mut tape_pos = 0;
     let mut loop_stack: Vec<usize> = Vec::new();
@@ -92,4 +119,16 @@ pub fn compute_token_ascii(mut memory:Vec<u8>, tape: Vec<char>) {
         }
         tape_pos += 1;
     }
+}
+
+pub fn compute_token_ascii_e(mut memory:Vec<u8>, tape: Vec<char>) {
+
+}
+
+pub fn compute_token_utf8_s(mut memory:Vec<u32>, tape: Vec<char>) {
+
+}
+
+pub fn compute_token_utf8_e(mut memory:Vec<u32>, tape: Vec<char>) {
+
 }
