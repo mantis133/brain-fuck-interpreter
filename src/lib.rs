@@ -48,13 +48,18 @@ pub fn get_settings(file_contents:&String) -> Result<Settings,error::Error>{
     }
 }
 
-// pub fn compute_tokens(file_contents:String){
-//     let cons: Vec<char> = Vec::from(file_contents);
-//     for token in cons{
-//         match token{
-//             ('+' as u8) => {},
-
-//             _ => {}
-//         }
-//     }
-// }
+pub fn get_stream(file_contents:&String) -> Result<Vec<char>,error::Error>{
+    let res:Vec<&str> = file_contents.lines().into_iter().collect();
+    match res.split_first(){
+        Some((_,stream)) => {
+            let stream:Vec<char> = Vec::from(stream.join(""))
+                                    .into_iter()
+                                    .map(|x| x as char)
+                                    .collect();
+            return Ok(stream)
+        },
+        None => {
+            return Err(error::Error::Syntax("File is Empty".to_string()))
+        }
+    }
+}
